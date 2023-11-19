@@ -1,0 +1,54 @@
+version: '3.3'
+# Ставим докер веб сервер
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+    # Диреектория к конфигу
+      - ./nginx:/etc/nginx/conf.d
+    # Дирректория к файлам html
+      - ./data/html:/var/www/html
+    ports:
+      - 8080:80
+    links:
+      - wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+    # Дирректория к файлам html
+      - ./data/html:/var/www/html
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST:  db:3306
+      WORDPRESS_DB_USER: anyuser
+      WORDPRESS_DB_PASSWORD: mypass
+      WORDPRESS_DB_NAME: mysite
+
+  db:
+    image: mysql:5.7
+    volumes:
+    # Дирректория с базой
+      - ./data/mysql:/var/lib/mysql
+    # Если нужно сразу загрузить дамп базы в БД,то кидаем файл в дирректорию mysqldump, если не надо - комментируем
+      - ./data/mysqldump/:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+    # Параметры должны совпадать с тем, что указали в разделе wordpress
+      MYSQL_ROOT_PASSWORD: mypass
+      MYSQL_DATABASE: mysite
+      MYSQL_USER: anyuser
+      MYSQL_PASSWORD: mypass
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    links:
+      - db:mysql
+    ports:
+      - 8081:80
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass
