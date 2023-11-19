@@ -17,3 +17,18 @@ new-ip_2023-11-17.tar.gz
 prog_2023-11-17.tar.gz
 test.txt_2023-11-17.tar.gz
 ```
+[WordpressChangeSRV_docker-compose.yml](/WordpressChangeSRV_docker-compose.yml) - Автоматическое создание окружения для работы с сайтами на Wordpress
+```
+# Структура папок:
+-rootDir---data----html
+               ----mysql
+               ----mysqldump
+        ---logs----nginx
+        ---nginx---nginx.conf
+
+# При переносе вероятно необходимо нужно будет испаравить старый домен на новый
+SELECT * FROM wp_options WHERE option_name='home';
+SELECT * FROM wp_options WHERE option_name='siteurl';
+# Сменить пароль админа:
+UPDATE wp_users SET user_pass = MD5('NewPass') WHERE user_login = 'admin';
+```
