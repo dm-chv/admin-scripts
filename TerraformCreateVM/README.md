@@ -12,6 +12,7 @@
 # 
 
 personal.auto.tfvars - указываем параметры подключения к Яндекс облаку  
+cloud-config.yaml - SSH ключи и логин для подключения к VPC  
 security.tf - настройка security групп  
 vm-master.tf - Конфигурация VPC для мастер ноды  
 vm-worker.tf - Конфигурация VPC для воркер ноды  
