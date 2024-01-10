@@ -1,0 +1,42 @@
+---
+- name: config all servers
+  hosts:
+    masterservers
+    workerservers
+  become: true
+  tasks:
+    - block:
+      - name: Install apt-transport-https
+        ansible.builtin.apt:
+          name: apt-transport-https
+      - name: Install ca-certificates
+        ansible.builtin.apt:
+          name: ca-certificates
+      - name: Install curl
+        ansible.builtin.apt:
+          name: curl
+      - name: Run a curl
+        ansible.builtin.shell: sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://dl.k8s.io/apt/doc/apt-key.gpg
+      - name: Run a command
+        ansible.builtin.shell: echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+      - name: Run the equivalent of "apt-get update"
+        ansible.builtin.apt:
+          update_cache: yes
+      - name: Install kubelet
+        ansible.builtin.apt:
+          name: kubelet
+      - name: Install kubeadm
+        ansible.builtin.apt:
+          name: kubeadm
+      - name: Install kubectl
+        ansible.builtin.apt:
+          name: kubectl      
+      - name: Install containerd
+        ansible.builtin.apt:
+          name: containerd
+      - name: iptables settings
+        ansible.builtin.shell: sudo modprobe br_netfilter
+      - name: iptables settings
+        ansible.builtin.shell: sudo sysctl net.bridge.bridge-nf-call-iptables=1
+      - name: iptables settings
+        ansible.builtin.shell: sudo sysctl -w net.ipv4.ip_forward=1

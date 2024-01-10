@@ -1,0 +1,8 @@
+- name: join worker servers
+  hosts:
+    workerservers
+  become: true
+  tasks:
+    - block:
+      - name: join 
+        ansible.builtin.shell: kubeadm join 10.0.1.13:6443 --token of1bp9.42jepj5e5vn21xr3 --discovery-token-ca-cert-hash sha256:e957b0c224ab1b394849eff5255bd13a36bea5bd12ce67a3e26a2f362dea10cd 
